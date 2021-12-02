@@ -1,8 +1,23 @@
-var fs = require("fs"); // Load the filesystem module
-let URL = process.argv[2]
-let filePath = process.argv[3]
+const url = process.argv[2];
+const path = process.argv[3];
+const fs = require('fs');
+const request = require('request');
 
-const request = require("request")
-request(URL,(error,response, body) => {
-  console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
-})
+request(url, (error, response, body) => {
+  if (!error) {
+    const size = body.length;
+    fs.writeFile(path, body, (err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      printResult(size, path); // file written successfully
+    })
+  } else {
+    console.log('error:', error); // print the error if one occurred
+  }
+});
+
+const printResult = (size, path) => {
+  console.log(`Downloaded and saved ${size} bytes to ${path}`);
+};
